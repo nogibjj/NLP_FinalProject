@@ -37,7 +37,7 @@ class UnigramModel:
 
 
 completeSpam = pd.read_csv(
-    "/Users/leilei/Downloads/MIDS/703 NLP/Final Project/Final Project/NLP_finalProject/Alicia_workspace/~$sample_email.xlsx"
+    "/Users/leilei/Downloads/MIDS/703 NLP/Final Project/Final Project/NLP_finalProject/Alicia_workspace/completeSpamAssassin.csv"
 )
 # 删除空行
 df = pd.DataFrame(completeSpam)
@@ -73,12 +73,11 @@ spam_list = [line for email in spam_emails for line in email]
 non_spam_list = [line for email in non_spam_emails for line in email]
 
 # Display the first few elements of the compiled simple list to verify the structure
-
-print(len(spam_list))
-print(len(non_spam_list))
+sample_spam = spam_list[:300]
+sample_nonspam = non_spam_list[:500]
 
 vocabulary = sorted(
-    set(token for sentence in spam_list + non_spam_list for token in sentence)
+    set(token for sentence in sample_spam + sample_nonspam for token in sentence)
 ) + [None]
 vocabulary_map = {token: idx for idx, token in enumerate(vocabulary)}
 
@@ -100,8 +99,8 @@ def encode_document(tokens: Sequence[Optional[str]]) -> List[FloatArray]:
 
 
 # assemble training and testing data
-h0_observations = [(encode_document(sentence), 0) for sentence in spam_list]
-h1_observations = [(encode_document(sentence), 1) for sentence in non_spam_list]
+h0_observations = [(encode_document(sentence), 0) for sentence in sample_spam]
+h1_observations = [(encode_document(sentence), 1) for sentence in sample_nonspam]
 all_data = h0_observations + h1_observations
 random.shuffle(all_data)
 test_percent = 10
