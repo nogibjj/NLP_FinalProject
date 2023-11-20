@@ -37,11 +37,10 @@ class UnigramModel:
 
 
 completeSpam = pd.read_csv(
-    "/Users/leilei/Downloads/MIDS/703 NLP/Final Project/Final Project/NLP_finalProject/Alicia_workspace/completeSpamAssassin.csv"
+    "/Users/leilei/Downloads/MIDS/703 NLP/Final Project/Final Project/NLP_finalProject/Alicia_workspace/~$sample_email.xlsx"
 )
 # 删除空行
 df = pd.DataFrame(completeSpam)
-df = df[0:]
 
 
 def process_email_body_simple(body):
