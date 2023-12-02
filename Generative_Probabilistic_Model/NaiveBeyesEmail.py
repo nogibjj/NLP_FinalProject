@@ -2,81 +2,9 @@
 import random
 from typing import List, Tuple, Mapping, Optional, Sequence
 import numpy as np
-from numpy.typing import NDArray
+from UnigramModel import UnigramModel
+from ProcessEmail import process_email_body_simple
 import pandas as pd
-
-FloatArray = NDArray[np.float64]
-# random.seed(31)
-
-
-# define model
-class UnigramModel:
-    """The unigram language model."""
-
-    def __init__(self, size: int) -> None:
-        """Initialize."""
-        self.size = size
-        self.p: Optional[FloatArray] = None
-
-    def train(self, encodings: List[FloatArray]) -> "UnigramModel":
-        """Train the model on data."""
-        counts = np.ones((self.size, 1))
-        for encoding in encodings:
-            counts += encoding
-        self.p = counts / counts.sum()
-        return self
-
-    def apply(self, encodings: List[FloatArray]) -> float:
-        """Compute the log probability of a document."""
-        if self.p is None:
-            raise ValueError("This model is untrained")
-        return (
-            np.hstack(encodings).sum(axis=1, keepdims=True).T @ np.log(self.p)
-        ).item()
-
-
-completeSpam = pd.read_csv("Alicia_workspace/completeSpamAssassin.csv")
-# delete space
-df = pd.DataFrame(completeSpam)
-
-
-def process_email_body_simple(body):
-    """
-    Process the email body by splitting it into lines, and then splitting each line into words.
-    Handles cases where the body is not a string. No quoting of words.
-    """
-    if not isinstance(body, str):
-        return []
-
-    # Split the email body into lines
-    lines = body.split("\n")
-
-    # Split each line into words and store them in a list
-    processed_lines = [line.split() for line in lines if line.strip() != ""]
-
-    return processed_lines
-
-
-# Splitting the dataframe into two based on the label
-spam_df = df[df["Label"] == 1]
-non_spam_df = df[df["Label"] == 0]
-
-# Applying the simplified processing function to each group
-spam_emails = spam_df["Body"].apply(process_email_body_simple)
-non_spam_emails = non_spam_df["Body"].apply(process_email_body_simple)
-
-# Compile the processed emails into separate lists for spam and non-spam
-spam_list = [line for email in spam_emails for line in email]
-non_spam_list = [line for email in non_spam_emails for line in email]
-
-# Display the first few elements of the compiled simple list to verify the structure
-sample_spam = spam_list[:800]  # 300
-sample_nonspam = non_spam_list[:1000]  # 500
-# print(sample_spam)
-vocabulary = sorted(
-    set(token for sentence in sample_spam + sample_nonspam for token in sentence)
-) + [None]
-vocabulary_map = {token: idx for idx, token in enumerate(vocabulary)}
 
 
 class NaiveBayesEmailClassifier:
@@ -149,6 +77,32 @@ class NaiveBayesEmailClassifier:
         pc0 = np.exp(h0_logp)
         pc1 = np.exp(h1_logp)
         return 1 if pc1 > pc0 else 0
+
+
+completeSpam = pd.read_csv("/workspaces/NLP_finalProject/data/completeSpamAssassin.csv")
+# delete space
+df = pd.DataFrame(completeSpam)
+
+# Splitting the dataframe into two based on the label
+spam_df = df[df["Label"] == 1]
+non_spam_df = df[df["Label"] == 0]
+
+# Applying the simplified processing function to each group
+spam_emails = spam_df["Body"].apply(process_email_body_simple)
+non_spam_emails = non_spam_df["Body"].apply(process_email_body_simple)
+
+# Compile the processed emails into separate lists for spam and non-spam
+spam_list = [line for email in spam_emails for line in email]
+non_spam_list = [line for email in non_spam_emails for line in email]
+
+# Display the first few elements of the compiled simple list to verify the structure
+sample_spam = spam_list[:800]  # 300
+sample_nonspam = non_spam_list[:1000]  # 500
+# print(sample_spam)
+vocabulary = sorted(
+    set(token for sentence in sample_spam + sample_nonspam for token in sentence)
+) + [None]
+vocabulary_map = {token: idx for idx, token in enumerate(vocabulary)}
 
 
 def main():
