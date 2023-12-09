@@ -6,6 +6,9 @@ FloatArray = NDArray[np.float64]
 
 
 # define unigram model
+# credit to Patrick
+
+
 class UnigramModel:
     """The unigram language model."""
 
