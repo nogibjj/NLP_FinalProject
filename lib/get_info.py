@@ -1,5 +1,5 @@
 # this code is to return email spam and non spam samples as well as the vocabulary
-from lib.ProcessEmail import process_email_body_simple
+from ProcessEmail import process_email_body_simple
 import pandas as pd
 
 
