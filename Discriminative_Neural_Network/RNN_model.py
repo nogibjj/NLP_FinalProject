@@ -1,48 +1,52 @@
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-import nltk
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
+from lib.sythetic_data import *
 
-nltk.download("punkt")
 
-# simulation data
-# Example data (replace with your actual data)
-# Assume each email is converted to a sequence of integers
-X = [[1, 2, 3, 4], [1, 4, 3, 5]]  # Email sequences
-y = [0, 1]  # 0 for non-spam, 1 for spam
+def RNN_main(data):
+    df = data
+    # Convert to string and handle NaNs
+    df["Body"] = df["Body"].fillna("").astype(str)
+    # Tokenization
+    tokenizer = Tokenizer(num_words=5000, oov_token="<OOV>")
+    tokenizer.fit_on_texts(df["Body"])
 
-# Pad sequences for consistent input size
-X_padded = pad_sequences(X, maxlen=100)  # Adjust 'maxlen' as needed
-print(X_padded)
+    # split into train and test sets
+    X_train, X_test, y_train, y_test = train_test_split(
+        df["Body"], df["Label"], test_size=0.2, random_state=42
+    )
+    train_sequences = tokenizer.texts_to_sequences(X_train)
+    # train Padding
+    train_padded_sequences = pad_sequences(train_sequences, maxlen=200)
 
-# Split into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X_padded, y, test_size=0.2, random_state=42
-)
+    # # Labels
+    train_labels = df["Label"].values
+    model = Sequential()
+    model.add(Embedding(5000, 64, input_length=200))
+    model.add(SimpleRNN(64))
+    model.add(Dense(1, activation="sigmoid"))
 
-# build model
-model = Sequential()
-model.add(
-    Embedding(input_dim=10000, output_dim=32)
-)  # Adjust 'input_dim' as per your vocabulary size
-model.add(SimpleRNN(32))  # 32 units in RNN layer
-model.add(Dense(1, activation="sigmoid"))  # Output layer for binary classification
+    model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+    model.summary()
+    # train the model
+    model.fit(train_padded_sequences, train_labels, epochs=10, validation_split=0.2)
+    # test the model
+    test_sequences = tokenizer.texts_to_sequences(X_test)
+    test_padded_sequences = pad_sequences(test_sequences, maxlen=200)
+    test_labels = y_test.values
+    loss, accuracy = model.evaluate(test_padded_sequences, test_labels)
+    print(f"Test Accuracy: {accuracy}")
 
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
-# train model
-model.fit(
-    X_train, y_train, epochs=10, batch_size=128
-)  # Adjust epochs and batch_size as needed
+if __name__ == "__main__":
+    # Load dataset
+    data_file = "/workspaces/NLP_finalProject/data/completeSpamAssassin.csv"
+    df_original = pd.read_csv(data_file)
+    RNN_main(df_original)
 
-y_pred = model.predict(X_test)
-y_pred = (y_pred > 0.5).astype(int)  # Convert probabilities to binary predictions
-
-# Calculate accuracy
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Model Accuracy: {accuracy * 100:.2f}%")
+    # for sythetic dataset
+    # create_synthetic_dataset()

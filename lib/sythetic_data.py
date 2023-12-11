@@ -3,10 +3,11 @@ import sys
 import os
 import pandas as pd
 import random
+from lib.ProcessEmail import process_email_body_simple
 
 # import packages from Generative_Probabilistic_Model
-sys.path.append(os.path.abspath(os.path.join("..")))
-from Generative_Probabilistic_Model.ProcessEmail import process_email_body_simple
+# sys.path.append(os.path.abspath(os.path.join("..")))
+# from Generative_Probabilistic_Model.ProcessEmail import process_email_body_simple
 
 # Load the data
 df = pd.read_csv("/workspaces/NLP_finalProject/data/completeSpamAssassin.csv")
