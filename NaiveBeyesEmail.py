@@ -1,6 +1,7 @@
 """Demonstrate Naive Bayes classification."""
 from lib.UnigramModel import UnigramModel
-from lib.ProcessEmail import process_email_body_simple
+
+# from lib.ProcessEmail import process_email_body_simple
 from lib.NaiveBayesEmailClassifier import NaiveBayesEmailClassifier
 from lib.get_info import *
 from lib.sythetic_data import *

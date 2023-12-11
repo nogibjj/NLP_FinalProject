@@ -12,4 +12,4 @@ def process_email_body_simple(body):
     # Split each line into words and store them in a list
     processed_lines = [line.split() for line in lines if line.strip() != ""]
 
-    return processed_lines
+    return processed_lines 
