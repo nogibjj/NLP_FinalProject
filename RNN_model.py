@@ -4,7 +4,13 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
-from lib.sythetic_data import *
+
+# from lib.sythetic_data import *
+from lib.UnigramModel import UnigramModel
+
+from lib.ProcessEmail import process_email_body_simple
+from lib.NaiveBayesEmailClassifier import NaiveBayesEmailClassifier
+from lib.get_info import *
 
 
 def RNN_main(data):
@@ -49,4 +55,6 @@ if __name__ == "__main__":
     RNN_main(df_original)
 
     # for sythetic dataset
-    # create_synthetic_dataset()
+    sythetic_data_file = "/workspaces/NLP_finalProject/data/sythetic_dataset.csv"
+    df_sythetic = pd.read_csv(sythetic_data_file)
+    RNN_main(df_sythetic)
