@@ -132,7 +132,7 @@ This report details the implementation of a Recurrent Neural Network (RNN) using
 |-------------------------------|-----------|-----------------|
 |                               | **RNN**   | **Naive Bayes** |
 | **Test (Real) Accuracy**      | **0.54**  | **0.9**         |
-| **Test (Synthetic) Accuracy** | **0.458** | **0.5**         |
+| **Test (Synthetic) Accuracy** | **0.458** | **0.95**        |
 
 With the updated accuracy figures for the RNN model on the synthetic dataset, we can reassess the performance of both models:
 
