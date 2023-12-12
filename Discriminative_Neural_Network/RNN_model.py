@@ -4,10 +4,8 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
-
-# from lib.sythetic_data import *
+from lib.sythetic_data import *
 from lib.UnigramModel import UnigramModel
-
 from lib.ProcessEmail import process_email_body_simple
 from lib.NaiveBayesEmailClassifier import NaiveBayesEmailClassifier
 from get_info import *
