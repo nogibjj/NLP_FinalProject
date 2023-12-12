@@ -1,9 +1,10 @@
 """Demonstrate Naive Bayes classification."""
-from UnigramModel import UnigramModel
-from ProcessEmail import process_email_body_simple
-from NaiveBayesEmailClassifier import NaiveBayesEmailClassifier
-from get_info import *
-from sythetic_data import *
+from lib.UnigramModel import UnigramModel
+
+# from lib.ProcessEmail import process_email_body_simple
+from lib.NaiveBayesEmailClassifier import NaiveBayesEmailClassifier
+from lib.get_info import *
+from lib.sythetic_data import *
 
 
 def main(sample_spam, sample_nonspam, vocabulary_map):
